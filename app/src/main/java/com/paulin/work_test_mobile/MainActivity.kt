@@ -12,10 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.paulin.work_test_mobile.ui.theme.WorktestmobileTheme
+import com.paulin.work_test_mobile.viewmodel.HomeViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        HomeViewModel().getRestaurantData()
         enableEdgeToEdge()
         setContent {
             WorktestmobileTheme {
