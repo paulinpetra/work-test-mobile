@@ -58,6 +58,9 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.okhttp)
     implementation(libs.retrofit.kotlinx.converter)
+    implementation(libs.coil.compose)
+    implementation(libs.coil.okhttp)
+    implementation(libs.androidx.navigation.compose)
 
 
 }

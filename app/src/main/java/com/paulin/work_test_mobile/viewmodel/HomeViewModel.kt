@@ -2,7 +2,9 @@ package com.paulin.work_test_mobile.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.paulin.work_test_mobile.data.models.network.FilterData
 import com.paulin.work_test_mobile.data.models.network.FiltersResponse
+
 import com.paulin.work_test_mobile.data.models.network.RestaurantData
 import com.paulin.work_test_mobile.data.repository.RestaurantRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,14 +21,16 @@ class HomeViewModel : ViewModel() {
     //live data version:
     // private val _restaurantData = MutableLiveData<List<RestaurantData>>()
     //val restaurantData: LiveData<List<RestaurantData>> = _restaurantData
-
+//state management with StateFlow
     //StateFlow to hold mutable and immutable restaurant data
+    //Private mutable state (_restaurantData) that only the ViewModel can modify
+    //Public immutable state (restaurantData) that UI components observe
     private val _restaurantData = MutableStateFlow<List<RestaurantData>>(emptyList())
     val restaurantData: StateFlow<List<RestaurantData>> = _restaurantData.asStateFlow()
 
     //StateFlow to hold filter data
-    private val _filters = MutableStateFlow<List<FiltersResponse>>(emptyList())
-    val filters: StateFlow<List<FiltersResponse>> = _filters.asStateFlow()
+    private val _filters = MutableStateFlow<List<FilterData>>(emptyList())
+    val filters: StateFlow<List<FilterData>> = _filters.asStateFlow()
 
     //data for filtered restaurant list
     private val _filteredRestaurants = MutableStateFlow<List<RestaurantData>>(emptyList())
@@ -49,17 +53,18 @@ class HomeViewModel : ViewModel() {
             try {
                 val restaurantResult =
                     restaurantRepository.fetchRestaurantData()   //kotlin coroutine system automatically switches to IO thread (repo methods are suspend f that don't block main thread
-                println("${Thread.currentThread().name} :: ${Thread.currentThread().id}")  //checking which thread it runs on (system.out in log cat)
-
                 if (restaurantResult != null) {
                     _restaurantData.value = restaurantResult
                     _filteredRestaurants.value = restaurantResult  //shows all initially
 
-                    _error.value = null   //after network call is complete, back to main thread   (why post value??)
+                    _error.value =
+                        null   //setting error to null after sucessful call indicating that any prev errors has been resolved
 
                     // Extract unique filter IDs and fetch their details(fetchFilterDetails function below)
-                    val filterIds = restaurantResult.flatMap { it.filterIds }.distinct()
-                    fetchFilterDetails(filterIds)
+                    //Each RestaurantData object has a property called filterIds which is a List<String>
+                    val filterIds = restaurantResult.flatMap { it.filterIds }
+                        .distinct()//distinct() removes duplicate elements from a collection so you only fetch details for each filter ID once, even if multiple restaurants use the same filter
+                    fetchFilterDetails(filterIds)//For each unique filter ID, fetch its detailed information
 
                 } else {
                     _error.value = "Failed to fetch restaurant data"
@@ -75,12 +80,18 @@ class HomeViewModel : ViewModel() {
     }
 
     //Fetch filter-list data
+    //Maps each filter ID to its details using the repository
+    //For each ID, calls the repository method to get its details(repo takes one id)
+    //Collects all successful responses into a list
     private fun fetchFilterDetails(filterIds: List<String>) {
         viewModelScope.launch {
-            val filterDetails = filterIds.mapNotNull { filterId ->
+            val filterDetails = filterIds.mapNotNull { filterId ->//automatically filter out any null results
                 restaurantRepository.fetchFilterDetails(filterId)
             }
-            _filters.value = filterDetails
+// Extract FilterData objects from responses
+            val allFilterData = filterDetails.flatMap { it.filters }
+            _filters.value = allFilterData
+
         }
     }
 
@@ -90,7 +101,8 @@ class HomeViewModel : ViewModel() {
         if (allRestaurants.isEmpty()) return
 
         val filtered = allRestaurants.filter { it.filterIds.contains(filterId) }
-        _filteredRestaurants.value = filtered
+        _filteredRestaurants.value = filtered //Updates the filtered restaurants state flow
+
     }
 
 }
