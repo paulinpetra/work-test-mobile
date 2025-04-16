@@ -3,8 +3,6 @@ package com.paulin.work_test_mobile.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.paulin.work_test_mobile.data.models.network.FilterData
-import com.paulin.work_test_mobile.data.models.network.FiltersResponse
-
 import com.paulin.work_test_mobile.data.models.network.RestaurantData
 import com.paulin.work_test_mobile.data.repository.RestaurantRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,10 +16,7 @@ class HomeViewModel : ViewModel() {
     //call the method of RestaurantRepository which fetches the data
     private val restaurantRepository: RestaurantRepository = RestaurantRepository()
 
-    //live data version:
-    // private val _restaurantData = MutableLiveData<List<RestaurantData>>()
-    //val restaurantData: LiveData<List<RestaurantData>> = _restaurantData
-//state management with StateFlow
+    //state management with StateFlow
     //StateFlow to hold mutable and immutable restaurant data
     //Private mutable state (_restaurantData) that only the ViewModel can modify
     //Public immutable state (restaurantData) that UI components observe
@@ -88,10 +83,8 @@ class HomeViewModel : ViewModel() {
             val filterDetails = filterIds.mapNotNull { filterId ->//automatically filter out any null results
                 restaurantRepository.fetchFilterDetails(filterId)
             }
-// Extract FilterData objects from responses
-            val allFilterData = filterDetails.flatMap { it.filters }
-            _filters.value = allFilterData
-
+            // Directly set the list of FilterData objects
+            _filters.value = filterDetails
         }
     }
 

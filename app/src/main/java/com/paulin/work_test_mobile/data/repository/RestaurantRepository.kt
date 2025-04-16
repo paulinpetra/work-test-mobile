@@ -2,7 +2,7 @@ package com.paulin.work_test_mobile.data.repository
 
 import android.util.Log
 import com.paulin.work_test_mobile.data.api.RetrofitInstance
-import com.paulin.work_test_mobile.data.models.network.FiltersResponse
+import com.paulin.work_test_mobile.data.models.network.FilterData
 import com.paulin.work_test_mobile.data.models.network.OpenStatusResponse
 import com.paulin.work_test_mobile.data.models.network.RestaurantData
 import com.paulin.work_test_mobile.data.models.network.RestaurantsResponse
@@ -45,7 +45,7 @@ class RestaurantRepository {
     }
 
     //the fetch for the filter list by using id from restaurants
-    suspend fun fetchFilterDetails(filterId: String): FiltersResponse? = withContext(Dispatchers.IO) {
+    suspend fun fetchFilterDetails(filterId: String): FilterData? = withContext(Dispatchers.IO) {
         try {
             val response = restaurantApi.getFilterDetails(filterId)
             if (response.isSuccessful) {

@@ -1,11 +1,8 @@
 package com.paulin.work_test_mobile.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.paulin.work_test_mobile.ui.components.AppHeader
 import com.paulin.work_test_mobile.ui.components.ErrorMessage
 import com.paulin.work_test_mobile.ui.components.FilterList
 import com.paulin.work_test_mobile.ui.components.LoadingIndicator
@@ -40,15 +38,7 @@ fun HomePage(modifier: Modifier = Modifier, viewModel: HomeViewModel, navControl
             .fillMaxSize()
             .padding(16.dp)//change later
     ) {
-        // Header with Logo
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp), horizontalArrangement = Arrangement.Center
-        ) {
-            // Replace with logo
-            Text(text = "Logo")
-        }
+        AppHeader()
 
         // Horizontal Scroll List for the filters
         if (filters.isNotEmpty()) {
@@ -62,9 +52,12 @@ fun HomePage(modifier: Modifier = Modifier, viewModel: HomeViewModel, navControl
             isLoading -> LoadingIndicator()
             error != null -> ErrorMessage(message = error!!)
             restaurantData.isEmpty() -> EmptyStateMessage()
-            else -> RestaurantList(restaurantData = restaurantData, onRestaurantClick = { restaurantId ->
-                navController.navigate("detail/$restaurantId")
-            })
+            else -> RestaurantList(
+                restaurantData = restaurantData,
+                filters = filters,
+                onRestaurantClick = { restaurantId ->
+                    navController.navigate("detail/$restaurantId")
+                })
         }
     }
 }

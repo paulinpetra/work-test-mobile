@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.paulin.work_test_mobile.ui.components.ErrorMessage
 import com.paulin.work_test_mobile.ui.components.LoadingIndicator
-import com.paulin.work_test_mobile.ui.components.RestaurantCard
+import com.paulin.work_test_mobile.ui.components.RestaurantDetailCard
 import com.paulin.work_test_mobile.viewmodel.RestaurantDetailViewModel
 
 
@@ -17,7 +17,7 @@ fun RestaurantDetailScreen(
     viewModel: RestaurantDetailViewModel,
     modifier: Modifier = Modifier
 ) {
-    // Fetch restaurant details and open status when the screen is displayed
+    // fetch restaurant details and open status when the screen is displayed
     LaunchedEffect(restaurantId) {
         viewModel.getRestaurantDetails(restaurantId)
         viewModel.getOpenStatus(restaurantId)
@@ -28,29 +28,27 @@ fun RestaurantDetailScreen(
     val openStatus by viewModel.openStatus.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
+    val filters by viewModel.filters.collectAsState()//??
+
 
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Show different UI based on state
+        // show different UI based on state
         when {
             isLoading -> LoadingIndicator()
             error != null -> ErrorMessage(message = error!!)
             restaurant != null -> {
-                // Use the reusable RestaurantCard component
-                RestaurantCard(
-                    name = restaurant!!.name,
-                    rating = restaurant!!.rating,
-                    deliveryTime = restaurant!!.deliveryTimeMinutes,
-                    imageUrl = restaurant!!.imageUrl,
-                    restaurantId = restaurant!!.id,
-                    onClick = { /* No action needed in detail view */ },
-                    showDetails = false // Only show basic info in the detail screen
+                RestaurantDetailCard(
+                    restaurant = restaurant!!,
+                    filters = filters
                 )
 
+
                 Spacer(modifier = Modifier.height(16.dp))
+
 
                 // Open status card
                 Card(
@@ -68,13 +66,6 @@ fun RestaurantDetailScreen(
                         style = MaterialTheme.typography.headlineMedium
                     )
                 }
-
-                // Additional restaurant details
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(
-                    text = "Restaurant ID: $restaurantId",
-                    style = MaterialTheme.typography.bodyMedium
-                )
             }
 
             else -> {

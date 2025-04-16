@@ -3,6 +3,7 @@ package com.paulin.work_test_mobile.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.paulin.work_test_mobile.data.models.network.FilterData
 import com.paulin.work_test_mobile.data.models.network.OpenStatusResponse
 import com.paulin.work_test_mobile.data.models.network.RestaurantData
 import com.paulin.work_test_mobile.data.repository.RestaurantRepository
@@ -16,12 +17,16 @@ import kotlinx.coroutines.launch
 
 class RestaurantDetailViewModel : ViewModel() {
 
-    // Create repository instance directly (same as HomeViewModel)
+    // create repository instance directly (same as HomeViewModel)
     private val restaurantRepository: RestaurantRepository = RestaurantRepository()
 
     // StateFlow to hold restaurant details
     private val _restaurantDetails = MutableStateFlow<RestaurantData?>(null)
     val restaurantDetails: StateFlow<RestaurantData?> = _restaurantDetails.asStateFlow()
+
+    // StateFlow to hold filter data
+    private val _filters = MutableStateFlow<List<FilterData>>(emptyList())
+    val filters: StateFlow<List<FilterData>> = _filters.asStateFlow()
 
     // StateFlow to hold the open status of the restaurant
     private val _openStatus = MutableStateFlow<OpenStatusResponse?>(null)
@@ -34,20 +39,21 @@ class RestaurantDetailViewModel : ViewModel() {
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
-    // Function to fetch restaurant details by ID
+    // function to fetch restaurant details by ID
     fun getRestaurantDetails(restaurantId: String) {
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                // Get the full restaurant list
                 val allRestaurants = restaurantRepository.fetchRestaurantData()
 
-                // Find the specific restaurant by ID
+                // find specific restaurant by id
                 val restaurant = allRestaurants?.find { it.id == restaurantId }
 
                 if (restaurant != null) {
                     _restaurantDetails.value = restaurant
                     _error.value = null
+                    fetchFilterDetails(restaurant.filterIds)
+
                 } else {
                     _error.value = "Restaurant not found"
                 }
@@ -60,7 +66,20 @@ class RestaurantDetailViewModel : ViewModel() {
         }
     }
 
-    // Function to fetch the open status of a restaurant
+    // function to fetch filters
+    private fun fetchFilterDetails(filterIds: List<String>) {
+        viewModelScope.launch {
+            // This matches your HomeViewModel implementation exactly
+            val filterDetails = filterIds.mapNotNull { filterId ->
+                restaurantRepository.fetchFilterDetails(filterId)
+            }
+            // Directly set the list of FilterData objects
+            _filters.value = filterDetails
+        }
+    }
+
+
+    // function to fetch the open status of a restaurant
     fun getOpenStatus(restaurantId: String) {
         viewModelScope.launch {
             try {
