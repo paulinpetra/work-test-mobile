@@ -11,8 +11,12 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 // Filter item colors
-val FilterTextColor = Color(0xFF000000)
-val FilterBackgroundColor = Color.White.copy(alpha = 0.4f)
+val FilterTextColor = Color(0xFF999999)
 
 // Restaurant card title color
 val RestaurantTitleColor = Color(0xFF1F2B2E)
+
+//TimeColor
+val TimeColor = Color(0xFF50555C)
+
+val TimeIconColor = Color(0xFFFF5252)

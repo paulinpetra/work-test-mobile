@@ -1,5 +1,6 @@
 package com.paulin.work_test_mobile.ui.components
 
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,8 +19,12 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.paulin.work_test_mobile.data.models.network.FilterData
 import com.paulin.work_test_mobile.data.models.network.RestaurantData
+import com.paulin.work_test_mobile.ui.theme.FilterTextColor
 import com.paulin.work_test_mobile.ui.theme.InterFamily
 import com.paulin.work_test_mobile.ui.theme.RestaurantTitleColor
+import com.paulin.work_test_mobile.ui.theme.TimeColor
+import com.paulin.work_test_mobile.ui.theme.TimeIconColor
+
 
 @Composable
 fun RestaurantList(
@@ -80,14 +85,12 @@ fun RestaurantCard(
 
         // Text content area
         Box(modifier = Modifier.fillMaxWidth()) {
-            // Main content column
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                // Restaurant name
                 Text(
                     text = name,
                     style = MaterialTheme.typography.titleLarge,
@@ -96,13 +99,11 @@ fun RestaurantCard(
                     fontWeight = FontWeight.Normal
                 )
 
-                // Filter tags
                 if (filters.isNotEmpty()) {
-                    // Join filter names with commas
-                    val filterText = filters.joinToString(", ") { it.name }
+                    val filterText = filters.joinToString(" • ") { it.name }
                     Text(
                         text = filterText,
-                        color = RestaurantTitleColor,
+                        color = FilterTextColor,
                         fontFamily = InterFamily,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
@@ -110,20 +111,28 @@ fun RestaurantCard(
                     )
                 }
 
-                // Delivery time
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    // You can add a clock icon here if needed
+                    // add clock icon later
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = "Delivery Time",
+                        tint = TimeIconColor,
+                        modifier = Modifier.size(14.dp)
+                    )
+
                     Text(
-                        text = "$deliveryTime min",
-                        style = MaterialTheme.typography.bodyMedium
+                        text = "$deliveryTime min", //hardcoded min, add hour and other options later
+                        fontFamily = InterFamily,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = TimeColor,
                     )
                 }
             }
 
-            // Rating in top-right corner of text area
             Row(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -131,7 +140,6 @@ fun RestaurantCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                // Star icon
                 Icon(
                     imageVector = Icons.Default.Star,
                     contentDescription = "Rating",
@@ -139,7 +147,6 @@ fun RestaurantCard(
                     modifier = Modifier.size(14.dp)
                 )
 
-                // Rating text
                 Text(
                     text = rating.toString(),
                     color = Color(0xFF50555C),
