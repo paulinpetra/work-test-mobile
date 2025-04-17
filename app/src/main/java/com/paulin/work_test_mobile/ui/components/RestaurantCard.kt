@@ -90,10 +90,12 @@ fun RestaurantCard(
     ) {
 
         AsyncImage(
-            contentScale = ContentScale.FillWidth,
             model = imageUrl,
             contentDescription = "Restaurant Image",
-            modifier = Modifier.fillMaxWidth()
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(132.dp)
         )
 
         // Text content area
