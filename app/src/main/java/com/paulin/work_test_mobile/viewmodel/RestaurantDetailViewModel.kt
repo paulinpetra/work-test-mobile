@@ -69,11 +69,9 @@ class RestaurantDetailViewModel : ViewModel() {
     // function to fetch filters
     private fun fetchFilterDetails(filterIds: List<String>) {
         viewModelScope.launch {
-            // This matches your HomeViewModel implementation exactly
             val filterDetails = filterIds.mapNotNull { filterId ->
                 restaurantRepository.fetchFilterDetails(filterId)
             }
-            // Directly set the list of FilterData objects
             _filters.value = filterDetails
         }
     }
@@ -87,7 +85,6 @@ class RestaurantDetailViewModel : ViewModel() {
                 _openStatus.value = status
             } catch (e: Exception) {
                 Log.e("DetailViewModel", "Error fetching open status", e)
-                // Not setting error here to avoid overriding restaurant details error
             }
         }
     }

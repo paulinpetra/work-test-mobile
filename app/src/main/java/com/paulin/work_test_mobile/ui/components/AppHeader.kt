@@ -21,7 +21,6 @@ fun AppHeader(
             .padding(vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Show logo from drawable resources
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = "App Logo",

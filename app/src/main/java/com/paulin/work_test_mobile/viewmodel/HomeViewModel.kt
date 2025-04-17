@@ -31,6 +31,10 @@ class HomeViewModel : ViewModel() {
     private val _filteredRestaurants = MutableStateFlow<List<RestaurantData>>(emptyList())
     val filteredRestaurants: StateFlow<List<RestaurantData>> = _filteredRestaurants.asStateFlow()
 
+    // StateFlow to track the currently active filter (null = no filter)
+    private val _activeFilterId = MutableStateFlow<String?>(null)
+    val activeFilterId: StateFlow<String?> = _activeFilterId.asStateFlow()
+
     //StateFlow to hold loading and error states
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
@@ -42,7 +46,7 @@ class HomeViewModel : ViewModel() {
     //get restaurant-list data, async so need coroutine (viewmodelscope)
     fun getRestaurantData() {
         _isLoading.value = true
-//When you call launch within a coroutine scope, such as viewModelScope, it creates and starts a new coroutine
+//when you call launch within a coroutine scope, such as viewModelScope, it creates and starts a new coroutine
         viewModelScope.launch {      //runs on main thread (handled by Retrofit)
             println("${Thread.currentThread().name} :: ${Thread.currentThread().id}")  //checking which thread it runs on (system.out in log cat)
             try {
@@ -55,11 +59,11 @@ class HomeViewModel : ViewModel() {
                     _error.value =
                         null   //setting error to null after sucessful call indicating that any prev errors has been resolved
 
-                    // Extract unique filter IDs and fetch their details(fetchFilterDetails function below)
-                    //Each RestaurantData object has a property called filterIds which is a List<String>
+                    // extract unique filter IDs and fetch their details(fetchFilterDetails function below)
+                    //each RestaurantData object has a property called filterIds which is a List<String>
                     val filterIds = restaurantResult.flatMap { it.filterIds }
                         .distinct()//distinct() removes duplicate elements from a collection so you only fetch details for each filter ID once, even if multiple restaurants use the same filter
-                    fetchFilterDetails(filterIds)//For each unique filter ID, fetch its detailed information
+                    fetchFilterDetails(filterIds)//for each unique filter ID, fetch its detailed information
 
                 } else {
                     _error.value = "Failed to fetch restaurant data"
@@ -74,16 +78,14 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    //Fetch filter-list data
-    //Maps each filter ID to its details using the repository
-    //For each ID, calls the repository method to get its details(repo takes one id)
-    //Collects all successful responses into a list
+    //fetch filter-list data
+    //for each ID, calls the repository method to get its details(repo takes one id)
     private fun fetchFilterDetails(filterIds: List<String>) {
         viewModelScope.launch {
             val filterDetails = filterIds.mapNotNull { filterId ->//automatically filter out any null results
                 restaurantRepository.fetchFilterDetails(filterId)
             }
-            // Directly set the list of FilterData objects
+            // directly set the list of FilterData objects
             _filters.value = filterDetails
         }
     }
@@ -91,11 +93,16 @@ class HomeViewModel : ViewModel() {
     //function for filtering restaurants based on selected filter
     fun filterRestaurantsByFilterId(filterId: String) {
         val allRestaurants = _restaurantData.value
-        if (allRestaurants.isEmpty()) return
-
-        val filtered = allRestaurants.filter { it.filterIds.contains(filterId) }
-        _filteredRestaurants.value = filtered //Updates the filtered restaurants state flow
+        // if same filter is clicked again, clear the filter
+        if (_activeFilterId.value == filterId) {
+            _activeFilterId.value = null
+            _filteredRestaurants.value = allRestaurants // Show all restaurants
+        } else {
+            // apply the new filter
+            _activeFilterId.value = filterId
+            val filtered = allRestaurants.filter { it.filterIds.contains(filterId) }
+            _filteredRestaurants.value = filtered
+        }
 
     }
-
 }

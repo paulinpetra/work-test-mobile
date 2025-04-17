@@ -53,7 +53,8 @@ fun AppNavigation(
 
             RestaurantDetailScreen(
                 restaurantId = restaurantId,
-                viewModel = detailViewModel
+                viewModel = detailViewModel,
+                onBackClick = { navController.navigateUp() }//navigateUp pops the current destination off the back stack
             )
         }
     }

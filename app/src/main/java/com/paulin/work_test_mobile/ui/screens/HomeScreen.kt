@@ -36,18 +36,21 @@ fun HomePage(modifier: Modifier = Modifier, viewModel: HomeViewModel, navControl
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)//change later
+            .padding(16.dp)
     ) {
         AppHeader()
 
-        // Horizontal Scroll List for the filters
+        // horizontal Scroll List for the filters
         if (filters.isNotEmpty()) {
-            FilterList(filters = filters, onFilterClick = { filterId ->
-                viewModel.filterRestaurantsByFilterId(filterId)
-            })
+            FilterList(
+                filters = filters,
+                activeFilterId = viewModel.activeFilterId.collectAsState().value,
+                onFilterClick = { filterId ->
+                    viewModel.filterRestaurantsByFilterId(filterId)
+                })
         }
 
-        // Vertical Scrollable List for the Restaurant Cards
+        // vertical Scrollable List for the Restaurant Cards
         when {
             isLoading -> LoadingIndicator()
             error != null -> ErrorMessage(message = error!!)

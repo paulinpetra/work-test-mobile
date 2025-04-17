@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
@@ -13,10 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.paulin.work_test_mobile.R
 import com.paulin.work_test_mobile.data.models.network.FilterData
 import com.paulin.work_test_mobile.data.models.network.RestaurantData
 import com.paulin.work_test_mobile.ui.theme.FilterTextColor
@@ -65,15 +68,25 @@ fun RestaurantCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    // custom shape with rounded top corners
+    val customShape = RoundedCornerShape(
+        topStart = 12.dp,
+        topEnd = 12.dp,
+        bottomStart = 0.dp,
+        bottomEnd = 0.dp
+    )
     Card(
         modifier = modifier
             .padding(vertical = 8.dp)
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        shape = CardDefaults.shape,
+        shape = customShape,
         elevation = CardDefaults.cardElevation(
-            defaultElevation = 8.dp,
+            defaultElevation = 4.dp,
         ),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        )
     ) {
 
         AsyncImage(
@@ -115,9 +128,9 @@ fun RestaurantCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    // add clock icon later
+
                     Icon(
-                        imageVector = Icons.Default.Star,
+                        painter = painterResource(id = R.drawable.clock_icon),
                         contentDescription = "Delivery Time",
                         tint = TimeIconColor,
                         modifier = Modifier.size(14.dp)

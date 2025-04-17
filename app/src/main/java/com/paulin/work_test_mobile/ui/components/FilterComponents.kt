@@ -1,7 +1,6 @@
 package com.paulin.work_test_mobile.ui.components
 
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -19,10 +18,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.paulin.work_test_mobile.data.models.network.FilterData
+import com.paulin.work_test_mobile.ui.theme.selectedFilterBgColor
 
 @Composable
 fun FilterList(
     filters: List<FilterData>,
+    activeFilterId: String?,
     onFilterClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -33,7 +34,12 @@ fun FilterList(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(filters) { filter ->
-            FilterItem(filter = filter, onFilterClick = onFilterClick)
+            FilterItem(
+                filter = filter,
+                isSelected = filter.id == activeFilterId,
+                onFilterClick = onFilterClick
+
+            )
         }
     }
 }
@@ -41,9 +47,21 @@ fun FilterList(
 @Composable
 fun FilterItem(
     filter: FilterData,
-    onFilterClick: (String) -> Unit,
+    isSelected: Boolean, // to show selected state
+    onFilterClick: (String) -> Unit, //takes string as input, returns void (but in kotlin an actual type) to satisfy type system even if this does not need to return anything
     modifier: Modifier = Modifier
 ) {
+    // change colors based on selection state
+    val backgroundColor = if (isSelected) {
+        selectedFilterBgColor
+    } else {
+        Color.White.copy(alpha = 0.4f)
+    }
+    val textColor = if (isSelected) {
+        Color.White
+    } else {
+        Color.Black
+    }
     Surface(//styled container
         modifier = modifier
             .padding(vertical = 4.dp, horizontal = 4.dp)
@@ -53,9 +71,8 @@ fun FilterItem(
                 spotColor = Color.Black.copy(alpha = 0.04f)
             )
             .clip(RoundedCornerShape(24.dp))
-            .background(Color.White.copy(alpha = 0.4f))
             .clickable { onFilterClick(filter.id) },
-        color = Color.Transparent // surface needs a color
+        color = backgroundColor
     ) {
         Row(
             modifier = Modifier
@@ -71,10 +88,10 @@ fun FilterItem(
                     .padding(end = 8.dp)
             )
 
-            // Text on the right
             Text(
                 text = filter.name,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                color = textColor
             )
         }
     }
