@@ -1,29 +1,31 @@
 package com.paulin.work_test_mobile.ui.components
 
-
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.paulin.work_test_mobile.data.models.network.FilterData
-import com.paulin.work_test_mobile.ui.theme.selectedFilterBgColor
+import com.paulin.work_test_mobile.ui.theme.FilterShadowColor
+import com.paulin.work_test_mobile.ui.theme.SelectedFilterBgColor
+import com.paulin.work_test_mobile.ui.theme.SelectedFilterTextColor
+import com.paulin.work_test_mobile.ui.theme.UnselectedFilterBgColor
+import com.paulin.work_test_mobile.ui.theme.UnselectedFilterTextColor
 
 @Composable
 fun FilterList(
     filters: List<FilterData>,
-    activeFilterId: String?,
+    activeFilterIds: Set<String>,
     onFilterClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -36,9 +38,8 @@ fun FilterList(
         items(filters) { filter ->
             FilterItem(
                 filter = filter,
-                isSelected = filter.id == activeFilterId,
+                isSelected = filter.id in activeFilterIds,
                 onFilterClick = onFilterClick
-
             )
         }
     }
@@ -47,37 +48,41 @@ fun FilterList(
 @Composable
 fun FilterItem(
     filter: FilterData,
-    isSelected: Boolean, // to show selected state
-    onFilterClick: (String) -> Unit, //takes string as input, returns void (but in kotlin an actual type) to satisfy type system even if this does not need to return anything
+    isSelected: Boolean,
+    onFilterClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // change colors based on selection state
     val backgroundColor = if (isSelected) {
-        selectedFilterBgColor
+        SelectedFilterBgColor
     } else {
-        Color.White.copy(alpha = 0.4f)
+        UnselectedFilterBgColor
     }
+
     val textColor = if (isSelected) {
-        Color.White
+        SelectedFilterTextColor
     } else {
-        Color.Black
+        UnselectedFilterTextColor
     }
-    Surface(//styled container
+
+    Box(
         modifier = modifier
-            .padding(vertical = 4.dp, horizontal = 4.dp)
+            .padding(4.dp)
             .shadow(
-                elevation = 4.dp,
+                elevation = 8.dp,
                 shape = RoundedCornerShape(24.dp),
-                spotColor = Color.Black.copy(alpha = 0.04f)
+                spotColor = FilterShadowColor,
+                clip = false,
+                ambientColor = FilterShadowColor
+
             )
             .clip(RoundedCornerShape(24.dp))
-            .clickable { onFilterClick(filter.id) },
-        color = backgroundColor
+            .background(backgroundColor)
+            .clickable { onFilterClick(filter.id) }
+            .padding(8.dp),
+        contentAlignment = Alignment.CenterStart
     ) {
         Row(
-            modifier = Modifier
-                .padding(8.dp)
-                .height(32.dp),
+            modifier = Modifier.height(32.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(

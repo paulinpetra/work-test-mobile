@@ -12,7 +12,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -24,7 +23,9 @@ import com.paulin.work_test_mobile.data.models.network.FilterData
 import com.paulin.work_test_mobile.data.models.network.RestaurantData
 import com.paulin.work_test_mobile.ui.theme.FilterTextColor
 import com.paulin.work_test_mobile.ui.theme.InterFamily
+import com.paulin.work_test_mobile.ui.theme.RatingTextColor
 import com.paulin.work_test_mobile.ui.theme.RestaurantTitleColor
+import com.paulin.work_test_mobile.ui.theme.StarIconColor
 import com.paulin.work_test_mobile.ui.theme.TimeColor
 import com.paulin.work_test_mobile.ui.theme.TimeIconColor
 
@@ -85,7 +86,7 @@ fun RestaurantCard(
             defaultElevation = 4.dp,
         ),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
 
@@ -158,13 +159,13 @@ fun RestaurantCard(
                 Icon(
                     imageVector = Icons.Default.Star,
                     contentDescription = "Rating",
-                    tint = Color(0xFFF9CA24),
+                    tint = StarIconColor,
                     modifier = Modifier.size(14.dp)
                 )
 
                 Text(
                     text = rating.toString(),
-                    color = Color(0xFF50555C),
+                    color = RatingTextColor,
                     fontFamily = InterFamily,
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Bold,

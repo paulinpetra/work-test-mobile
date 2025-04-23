@@ -10,7 +10,7 @@ import androidx.core.view.WindowCompat
 
 private val LightColorScheme = lightColorScheme(
     background = LightBackground,
-    surface = LightBackground
+    surface = WhiteSurface
 )
 
 @Composable

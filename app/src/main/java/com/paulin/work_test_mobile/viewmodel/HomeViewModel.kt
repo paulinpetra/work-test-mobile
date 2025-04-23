@@ -11,17 +11,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 
-//extends ViewModel, which is part of Android's architecture components
 class HomeViewModel : ViewModel() {
     //call the method of RestaurantRepository which fetches the data
     private val restaurantRepository: RestaurantRepository = RestaurantRepository()
 
-    //state management with StateFlow
-    //StateFlow to hold mutable and immutable restaurant data
     //Private mutable state (_restaurantData) that only the ViewModel can modify
     //Public immutable state (restaurantData) that UI components observe
     private val _restaurantData = MutableStateFlow<List<RestaurantData>>(emptyList())
-    val restaurantData: StateFlow<List<RestaurantData>> = _restaurantData.asStateFlow()
+    //not used by the UI
+    //val restaurantData: StateFlow<List<RestaurantData>> = _restaurantData.asStateFlow()
 
     //StateFlow to hold filter data
     private val _filters = MutableStateFlow<List<FilterData>>(emptyList())
@@ -31,9 +29,9 @@ class HomeViewModel : ViewModel() {
     private val _filteredRestaurants = MutableStateFlow<List<RestaurantData>>(emptyList())
     val filteredRestaurants: StateFlow<List<RestaurantData>> = _filteredRestaurants.asStateFlow()
 
-    // StateFlow to track the currently active filter (null = no filter)
-    private val _activeFilterId = MutableStateFlow<String?>(null)
-    val activeFilterId: StateFlow<String?> = _activeFilterId.asStateFlow()
+    // StateFlow to track the currently active filter
+    private val _activeFilterIds = MutableStateFlow<Set<String>>(emptySet())
+    val activeFilterIds: StateFlow<Set<String>> = _activeFilterIds.asStateFlow()
 
     //StateFlow to hold loading and error states
     private val _isLoading = MutableStateFlow(false)
@@ -90,19 +88,29 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    //function for filtering restaurants based on selected filter
+    //function for filtering restaurants based on selected filters
     fun filterRestaurantsByFilterId(filterId: String) {
         val allRestaurants = _restaurantData.value
-        // if same filter is clicked again, clear the filter
-        if (_activeFilterId.value == filterId) {
-            _activeFilterId.value = null
-            _filteredRestaurants.value = allRestaurants // Show all restaurants
+        val currentFilters = _activeFilterIds.value.toMutableSet()
+
+        if (filterId in currentFilters) {
+            // If filter is already selected, remove it
+            currentFilters.remove(filterId)
         } else {
-            // apply the new filter
-            _activeFilterId.value = filterId
-            val filtered = allRestaurants.filter { it.filterIds.contains(filterId) }
-            _filteredRestaurants.value = filtered
+            // Otherwise add it
+            currentFilters.add(filterId)
         }
 
+        _activeFilterIds.value = currentFilters
+        //apply filtering
+        if (currentFilters.isEmpty()) {
+            // No filters selected, show all restaurants
+            _filteredRestaurants.value = allRestaurants
+        } else {
+            // Show restaurants that match ANY of the selected filters
+            _filteredRestaurants.value = allRestaurants.filter { restaurant ->
+                restaurant.filterIds.any { it in currentFilters }
+            }
+        }
     }
 }

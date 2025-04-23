@@ -22,16 +22,16 @@ import com.paulin.work_test_mobile.viewmodel.HomeViewModel
 
 @Composable
 fun HomePage(modifier: Modifier = Modifier, viewModel: HomeViewModel, navController: NavController) {
-    // trigger data fetching when the composable is first displayed
-    LaunchedEffect(Unit) {//Unit as the key means "run this effect once when the composable enters the composition and never again"
+    LaunchedEffect(Unit) {
         viewModel.getRestaurantData()
     }
 
-    // collect StateFlow values as state
     val restaurantData by viewModel.filteredRestaurants.collectAsState()
     val filters by viewModel.filters.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
+    val activeFilterIds by viewModel.activeFilterIds.collectAsState()
+
 
     Column(
         modifier = modifier
@@ -40,17 +40,12 @@ fun HomePage(modifier: Modifier = Modifier, viewModel: HomeViewModel, navControl
     ) {
         AppHeader()
 
-        // horizontal Scroll List for the filters
         if (filters.isNotEmpty()) {
-            FilterList(
-                filters = filters,
-                activeFilterId = viewModel.activeFilterId.collectAsState().value,
-                onFilterClick = { filterId ->
-                    viewModel.filterRestaurantsByFilterId(filterId)
-                })
+            FilterList(filters = filters, activeFilterIds = activeFilterIds, onFilterClick = { filterId ->
+                viewModel.filterRestaurantsByFilterId(filterId)
+            })
         }
 
-        // vertical Scrollable List for the Restaurant Cards
         when {
             isLoading -> LoadingIndicator()
             error != null -> ErrorMessage(message = error!!)
