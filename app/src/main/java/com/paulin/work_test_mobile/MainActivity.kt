@@ -15,6 +15,7 @@ import com.paulin.work_test_mobile.navigation.AppNavigation
 import com.paulin.work_test_mobile.ui.theme.WorktestmobileTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -39,4 +40,5 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
 }

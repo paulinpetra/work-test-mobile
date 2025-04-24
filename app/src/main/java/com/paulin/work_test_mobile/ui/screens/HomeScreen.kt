@@ -22,8 +22,10 @@ import com.paulin.work_test_mobile.viewmodel.HomeViewModel
 
 @Composable
 fun HomePage(modifier: Modifier = Modifier, viewModel: HomeViewModel, navController: NavController) {
+
     LaunchedEffect(Unit) {
         viewModel.getRestaurantData()
+
     }
 
     val restaurantData by viewModel.filteredRestaurants.collectAsState()
@@ -31,7 +33,6 @@ fun HomePage(modifier: Modifier = Modifier, viewModel: HomeViewModel, navControl
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
     val activeFilterIds by viewModel.activeFilterIds.collectAsState()
-
 
     Column(
         modifier = modifier

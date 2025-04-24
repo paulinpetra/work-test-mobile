@@ -24,3 +24,7 @@ val RestaurantTitleColor = Color(0xFF1F2B2E)
 // Time indicator colors
 val TimeColor = Color(0xFF50555C)
 val TimeIconColor = Color(0xFFFF5252)
+
+// Restaurant status colors
+val RestaurantOpenColor = Color(0xFF2ECC71)
+val RestaurantClosedColor = Color(0xFFC0392B)

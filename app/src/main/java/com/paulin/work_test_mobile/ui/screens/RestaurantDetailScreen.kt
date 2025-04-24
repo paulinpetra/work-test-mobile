@@ -13,7 +13,6 @@ import androidx.compose.ui.zIndex
 import com.paulin.work_test_mobile.ui.components.ErrorMessage
 import com.paulin.work_test_mobile.ui.components.LoadingIndicator
 import com.paulin.work_test_mobile.ui.components.RestaurantDetailCard
-import com.paulin.work_test_mobile.ui.components.TransparentStatusBarEffect
 import com.paulin.work_test_mobile.viewmodel.RestaurantDetailViewModel
 
 
@@ -24,8 +23,6 @@ fun RestaurantDetailScreen(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    //hide status bar
-    TransparentStatusBarEffect(hideStatusBarIcons = true)
 
     // fetch restaurant details and open status when the screen is displayed
     LaunchedEffect(restaurantId) {

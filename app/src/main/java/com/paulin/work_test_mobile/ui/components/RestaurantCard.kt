@@ -14,6 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.paulin.work_test_mobile.R
@@ -23,6 +25,13 @@ import com.paulin.work_test_mobile.ui.theme.StarIconColor
 import com.paulin.work_test_mobile.ui.theme.TimeColor
 import com.paulin.work_test_mobile.ui.theme.TimeIconColor
 
+private fun formatDeliveryTime(minutes: Int): String {
+    return when {
+        minutes < 60 -> "$minutes min"
+        minutes % 60 == 0 -> "${minutes / 60} hr"
+        else -> "${minutes / 60} hr ${minutes % 60} min"
+    }
+}
 
 @Composable
 fun RestaurantList(
@@ -36,7 +45,6 @@ fun RestaurantList(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(restaurantData) { restaurant ->
-            // get filters for this restaurant
             val restaurantFilters = filters.filter { filter ->
                 restaurant.filterIds.contains(filter.id)
             }
@@ -63,7 +71,6 @@ fun RestaurantCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // custom shape with rounded top corners
     val customShape = RoundedCornerShape(
         topStart = 12.dp,
         topEnd = 12.dp,
@@ -93,7 +100,6 @@ fun RestaurantCard(
                 .height(132.dp)
         )
 
-        // Text content area
         Box(modifier = Modifier.fillMaxWidth()) {
             Column(
                 modifier = Modifier
@@ -121,15 +127,19 @@ fun RestaurantCard(
 
                     Icon(
                         painter = painterResource(id = R.drawable.clock_icon),
-                        contentDescription = "Delivery Time",
+                        contentDescription = null,
                         tint = TimeIconColor,
                         modifier = Modifier.size(14.dp)
                     )
 
+                    val formattedTime = formatDeliveryTime(deliveryTime)
                     Text(
-                        text = "$deliveryTime min", //hardcoded min, add hour and other options later
+                        text = formattedTime,
                         style = MaterialTheme.typography.labelSmall,
                         color = TimeColor,
+                        modifier = Modifier.semantics {
+                            contentDescription = "Delivery time: $formattedTime"
+                        }
                     )
                 }
             }
@@ -143,14 +153,17 @@ fun RestaurantCard(
             ) {
                 Icon(
                     imageVector = Icons.Default.Star,
-                    contentDescription = "Rating",
+                    contentDescription = null,
                     tint = StarIconColor,
                     modifier = Modifier.size(14.dp)
                 )
 
                 Text(
                     text = rating.toString(),
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.semantics {
+                        contentDescription = "Rating: $rating out of 5 stars"
+                    }
                 )
             }
         }

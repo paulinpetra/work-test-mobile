@@ -1,6 +1,5 @@
 package com.paulin.work_test_mobile.navigation
 
-
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -19,7 +18,6 @@ import com.paulin.work_test_mobile.viewmodel.RestaurantDetailViewModel
 @Composable
 fun AppNavigation(
     navController: NavHostController, //A controller that manages the navigation state and back stack in a Compose application
-
     modifier: Modifier = Modifier
 ) {
     NavHost( //serves as container for the navGraph, swaps out composables based on current destination
@@ -28,7 +26,6 @@ fun AppNavigation(
         modifier = modifier
     ) {
         composable(route = "home") {//unique identifier for this destination used to reference it when navigating
-
             // create HomeViewModel at the navigation level, ensures viewmodel survies config change but is cleared when navigating away permanently
             val homeViewModel: HomeViewModel = viewModel()
 
@@ -43,8 +40,6 @@ fun AppNavigation(
             arguments = listOf(navArgument("restaurantId") {
                 type = NavType.StringType
             })// define the type and properties of the route arguments
-//backStackEntry.arguments bundle contains all parameters for this navigation destination
-            //backStackEntry.arguments?.getString("restaurantId") extracts the parameter value
         ) { backStackEntry ->
             val restaurantId = backStackEntry.arguments?.getString("restaurantId") ?: ""
 
@@ -54,7 +49,7 @@ fun AppNavigation(
             RestaurantDetailScreen(
                 restaurantId = restaurantId,
                 viewModel = detailViewModel,
-                onBackClick = { navController.navigateUp() }//navigateUp pops the current destination off the back stack
+                onBackClick = { navController.navigateUp() }
             )
         }
     }

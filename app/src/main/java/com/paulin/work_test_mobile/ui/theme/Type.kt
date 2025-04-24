@@ -78,4 +78,12 @@ val Typography = Typography(
         lineHeight = 20.sp,
     ),
 
+    // Restaurant status text
+    bodyLarge = TextStyle(
+        fontFamily = InterFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 18.sp,
+        lineHeight = 16.sp,
+    ),
+
     )
