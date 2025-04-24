@@ -14,17 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.paulin.work_test_mobile.R
 import com.paulin.work_test_mobile.data.models.network.FilterData
 import com.paulin.work_test_mobile.data.models.network.RestaurantData
-import com.paulin.work_test_mobile.ui.theme.FilterTextColor
-import com.paulin.work_test_mobile.ui.theme.InterFamily
-import com.paulin.work_test_mobile.ui.theme.RatingTextColor
-import com.paulin.work_test_mobile.ui.theme.RestaurantTitleColor
 import com.paulin.work_test_mobile.ui.theme.StarIconColor
 import com.paulin.work_test_mobile.ui.theme.TimeColor
 import com.paulin.work_test_mobile.ui.theme.TimeIconColor
@@ -109,21 +103,14 @@ fun RestaurantCard(
             ) {
                 Text(
                     text = name,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = RestaurantTitleColor,
-                    fontFamily = InterFamily,
-                    fontWeight = FontWeight.Normal
+                    style = MaterialTheme.typography.titleLarge
                 )
 
                 if (filters.isNotEmpty()) {
                     val filterText = filters.joinToString(" • ") { it.name }
                     Text(
                         text = filterText,
-                        color = FilterTextColor,
-                        fontFamily = InterFamily,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        lineHeight = 16.sp
+                        style = MaterialTheme.typography.labelMedium
                     )
                 }
 
@@ -141,9 +128,7 @@ fun RestaurantCard(
 
                     Text(
                         text = "$deliveryTime min", //hardcoded min, add hour and other options later
-                        fontFamily = InterFamily,
-                        fontSize = 10.sp,
-                        fontWeight = FontWeight.Medium,
+                        style = MaterialTheme.typography.labelSmall,
                         color = TimeColor,
                     )
                 }
@@ -165,11 +150,7 @@ fun RestaurantCard(
 
                 Text(
                     text = rating.toString(),
-                    color = RatingTextColor,
-                    fontFamily = InterFamily,
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Bold,
-                    lineHeight = 10.sp
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }

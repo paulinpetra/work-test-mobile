@@ -25,7 +25,7 @@ val InterFamily = FontFamily(
 val Typography = Typography(
 
     // Title styles
-    //home screen restaurant title (18px)
+    //home screen restaurant title
     titleLarge = TextStyle(
         fontFamily = InterFamily,
         fontWeight = FontWeight.Normal,
@@ -34,13 +34,48 @@ val Typography = Typography(
         color = RestaurantTitleColor
 
     ),
-    // detail screen restaurant title (24px)
+    // detail screen restaurant title
     headlineMedium = TextStyle(
         fontFamily = InterFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 24.sp,
         lineHeight = 22.sp,
         color = RestaurantTitleColor
+    ),
+
+    // Filter categories text
+    labelMedium = TextStyle(
+        fontFamily = InterFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+        color = FilterTextColor
+    ),
+
+    // Delivery time text
+    labelSmall = TextStyle(
+        fontFamily = InterFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 10.sp,
+        lineHeight = 14.sp,
+        color = TimeColor
+    ),
+
+    // Rating text
+    bodySmall = TextStyle(
+        fontFamily = InterFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 10.sp,
+        lineHeight = 10.sp,
+        color = RatingTextColor
+    ),
+
+    // Filter item text
+    titleMedium = TextStyle(
+        fontFamily = PoppinsFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
     ),
 
     )
