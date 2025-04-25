@@ -13,20 +13,17 @@ import com.paulin.work_test_mobile.ui.screens.RestaurantDetailScreen
 import com.paulin.work_test_mobile.viewmodel.HomeViewModel
 import com.paulin.work_test_mobile.viewmodel.RestaurantDetailViewModel
 
-//this is the central nav component that defines the apps navigation graph
-
 @Composable
 fun AppNavigation(
-    navController: NavHostController, //A controller that manages the navigation state and back stack in a Compose application
+    navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    NavHost( //serves as container for the navGraph, swaps out composables based on current destination
+    NavHost(
         navController = navController,
         startDestination = "home",
         modifier = modifier
     ) {
-        composable(route = "home") {//unique identifier for this destination used to reference it when navigating
-            // create HomeViewModel at the navigation level, ensures viewmodel survies config change but is cleared when navigating away permanently
+        composable(route = "home") {
             val homeViewModel: HomeViewModel = viewModel()
 
             HomePage(
@@ -39,11 +36,10 @@ fun AppNavigation(
             route = "detail/{restaurantId}",
             arguments = listOf(navArgument("restaurantId") {
                 type = NavType.StringType
-            })// define the type and properties of the route arguments
+            })
         ) { backStackEntry ->
             val restaurantId = backStackEntry.arguments?.getString("restaurantId") ?: ""
 
-            // create a RestaurantDetailViewModel instance scoped to this navigation destination
             val detailViewModel: RestaurantDetailViewModel = viewModel()
 
             RestaurantDetailScreen(

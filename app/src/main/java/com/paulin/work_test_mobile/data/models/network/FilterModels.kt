@@ -10,8 +10,3 @@ data class FilterData(
     val imageUrl: String,
     val name: String
 )
-
-@Serializable
-data class FiltersResponse(
-    val filters: List<FilterData>
-)

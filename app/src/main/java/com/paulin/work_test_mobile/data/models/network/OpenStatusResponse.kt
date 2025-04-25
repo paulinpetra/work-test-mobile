@@ -1,6 +1,5 @@
 package com.paulin.work_test_mobile.data.models.network
 
-
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

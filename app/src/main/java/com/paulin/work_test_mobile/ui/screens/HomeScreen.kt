@@ -49,7 +49,11 @@ fun HomePage(modifier: Modifier = Modifier, viewModel: HomeViewModel, navControl
 
         when {
             isLoading -> LoadingIndicator()
-            error != null -> ErrorMessage(message = error!!)
+            error != null -> {
+                val currentError = error as String
+                ErrorMessage(message = currentError)
+            }
+
             restaurantData.isEmpty() -> EmptyStateMessage()
             else -> RestaurantList(
                 restaurantData = restaurantData,
