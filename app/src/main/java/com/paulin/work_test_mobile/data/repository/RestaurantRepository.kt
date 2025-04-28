@@ -14,11 +14,17 @@ class RestaurantRepository {
     private val restaurantApi =
         RetrofitInstance.restaurantApi
 
+    private var restaurantsCache: List<RestaurantData>? = null
+    private val filtersCache = mutableMapOf<String, FilterData>()
+
     suspend fun fetchRestaurantData(): List<RestaurantData>? = withContext(Dispatchers.IO) {
+        restaurantsCache?.let { return@withContext it }
         try {
             val response: Response<RestaurantsResponse> = restaurantApi.getRestaurants()
             if (response.isSuccessful) {
-                response.body()?.restaurants
+                val restaurants = response.body()?.restaurants
+                restaurantsCache = restaurants
+                restaurants
             } else {
                 Log.e("RestaurantRepository", "Error: ${response.errorBody()?.string()}")
                 null
@@ -31,10 +37,13 @@ class RestaurantRepository {
     }
 
     suspend fun fetchFilterDetails(filterId: String): FilterData? = withContext(Dispatchers.IO) {
+        filtersCache[filterId]?.let { return@withContext it }
         try {
             val response = restaurantApi.getFilterDetails(filterId)
             if (response.isSuccessful) {
-                response.body()
+                val filterData = response.body()
+                filterData?.let { filtersCache[filterId] = it }
+                filterData
             } else {
                 Log.e("RestaurantRepository", "Error: ${response.errorBody()?.string()}")
                 null

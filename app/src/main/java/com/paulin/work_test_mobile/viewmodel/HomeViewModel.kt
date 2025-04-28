@@ -31,6 +31,9 @@ class HomeViewModel : ViewModel() {
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
+    init {
+        getRestaurantData()
+    }
 
     fun getRestaurantData() {
         _isLoading.value = true
